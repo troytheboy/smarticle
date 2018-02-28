@@ -1,0 +1,35 @@
+{
+  "name": "smarticle",
+  "version": "1.0.0",
+  "description": "Read articles line by line or paragraph by paragraph",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/troytheboy/smarticle.git"
+  },
+  "keywords": [
+    "smarticle"
+  ],
+  "author": "Troy Barnard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/troytheboy/smarticle/issues"
+  },
+  "homepage": "https://github.com/troytheboy/smarticle#readme",
+  "devDependencies": {
+    "browser-sync": "^2.23.6",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "lodash": "^4.17.5",
+    "lodash.assign": "^4.2.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0",
+    "watchify": "^3.10.0"
+  },
+  "dependencies": {
+    "vue": "^2.5.13"
+  }
+}
