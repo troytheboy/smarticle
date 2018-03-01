@@ -26,7 +26,7 @@ html body {
     html body div.article div.selector {
       text-align: center;
       margin-left: auto;
-      margin-right: auto; }
-      html body div.article div.selector button {
-        background: #073642;
-        color: #fdf6e3; }
+      margin-right: auto;
+      padding-top: 200px;
+      color: #073642;
+      font-size: 65px; }

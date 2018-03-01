@@ -28,8 +28,8 @@ window.onload = function() {
   var template = `
     <div class="article container">
       <div class="row">
-        <div class="selector col-2">
-          <button class="btn btn-light" v-on:click="(index > 0) ? index -= 1:index = index"><</button>
+        <div class="selector col-2" v-on:click="changeIndex(-1)" v-on:keydown.37="changeIndex(-1)">
+          <i class="fas fa-caret-left"></i>
         </div>
         <div class="text col-8">
           <h1 id="title">{{ title }}</h1>
@@ -37,8 +37,8 @@ window.onload = function() {
           <p id="article-text-index">{{ index + 1 }} / {{ article.length }}</p>
           <p id="article-text">{{ article[index] }}</p>
         </div>
-        <div class="selector col-2">
-          <button class="btn btn-light" v-on:click="(index < (article.length - 1)) ? index += 1: index = index">></button>
+        <div class="selector col-2" v-on:click="changeIndex(1)" v-on:keydown.40="changeIndex(1)">
+          <i class="fas fa-caret-right"></i>
         </div>
       </div>
     </div>
@@ -48,14 +48,17 @@ window.onload = function() {
     el: '#app',
     template: template,
     data: data,
-    url: url
+    url: url,
+    methods: {
+      // parse: function() {
+      //
+      // },
+      changeIndex: function(num) {
+        var i = this.index + num;
+        if (i < (this.article.length) && i >= 0) {
+          this.index = i;
+        }
+      }
+    }
   })
-  function httpGet() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url, false ); // false for synchronous request
-    xmlHttp.send( null );
-    console.log(xmlHttp.responseText);
-    //return xmlHttp.responseText;
-  }
-  httpGet()
 }
