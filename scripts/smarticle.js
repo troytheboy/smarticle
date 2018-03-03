@@ -1,5 +1,3 @@
-const $ = 'jQuery';
-
 window.onload = function() {
   var data = {
     title: "Hope Hicks is resigning from the White House",
@@ -23,36 +21,79 @@ window.onload = function() {
     `Hicks, who first entered the White House as director of strategic communications, rose to the position of communications director after her predecessor Anthony Scaramucci flamed out in just 10 days, after attacking fellow White House aides in a vulgarity-laden interview.`,
     `The pick marked a 180-degree turn from the White House's earlier attempts to install a seasoned Republican strategist in the communications director post and was a tacit acknowledgment that wooing such a candidate was likely not in the cards.`,
     `The Greenwich, Connecticut, native officially entered Trump's orbit in 2014, after the President's daughter Ivanka Trump poached Hicks from the public affairs firm where Trump had been a client. Soon enough, Hicks was working directly for the family patriarch at the Trump Organization and he asked her in 2015 to join his campaign as his press secretary.`],
-    index: 0
+    index: 0,
+    readerMode: false,
+    url: ''
   }
   var template = `
-    <div class="article container">
-      <div class="row">
-        <div class="selector col-2" v-on:click="changeIndex(-1)" v-on:keydown.37="changeIndex(-1)">
-          <i class="fas fa-caret-left"></i>
+    <div class="app">
+      <div class="paste-bin container" v-if="!readerMode">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Paste URL</span>
+          </div>
+          <input v-model="url" type="text" class="form-control" placeholder="https://example.com/example-article" aria-label="Article URL" aria-describedby="basic-addon1">
+          <div class="input-group-append">
+            <button class="btn btn-dark" v-on:click="parseArticle()">Read</button>
+          </div>
         </div>
-        <div class="text col-8">
-          <h1 id="title">{{ title }}</h1>
-          <hr>
-          <p id="article-text-index">{{ index + 1 }} / {{ article.length }}</p>
-          <p id="article-text">{{ article[index] }}</p>
-        </div>
-        <div class="selector col-2" v-on:click="changeIndex(1)" v-on:keydown.40="changeIndex(1)">
-          <i class="fas fa-caret-right"></i>
+      </div>
+      <div class="article container">
+        <div class="row">
+          <div class="selector col-2" v-on:click="changeIndex(-1)">
+            <i class="fas fa-caret-left"></i>
+          </div>
+          <div class="text col-8">
+            <h1 id="title">{{ title }}</h1>
+            <hr>
+            <p id="article-text-index">{{ index + 1 }} / {{ article.length }}</p>
+            <p id="article-text">{{ article[index] }}</p>
+          </div>
+          <div class="selector col-2" v-on:click="changeIndex(1)">
+            <i class="fas fa-caret-right"></i>
+          </div>
         </div>
       </div>
     </div>
   `
-  var url = "https://www.cnn.com/2018/02/28/politics/hope-hicks-white-house/index.html"
+  var testURL = "https://www.cnn.com/2018/02/28/politics/hope-hicks-white-house/index.html"
   var vm = new Vue({
     el: '#app',
     template: template,
     data: data,
-    url: url,
     methods: {
-      // parse: function() {
-      //
-      // },
+      parseArticle: function() {
+        axios.get(this.url)
+          .then(response => {
+            let page = response.data;
+            //console.log(response.data)
+            let tags = []
+            let paragraphs = []
+            let currentTag = ''
+            for (let i = 0; i < page.length; i++) {
+              let currentChar = page.charAt(i);
+              currentTag += currentChar;
+              if (currentChar == '>') { // if TAG is closing
+                let endOfPage = (i == page.length - 1)
+                // keep collecting if it's text and not another opening tag next
+                if (!endOfPage) { // and if the page isn't ending
+                  if (page.charAt(i + 1) == '<') { // if another tag opens
+                    tags.push(currentTag)
+                    if (currentTag.includes('zn-body__paragraph')) {
+                      paragraphs.push(currentTag);
+                    }
+                    currentTag = '';
+                  }
+                }
+              }
+            }
+            console.log(tags, paragraphs);
+          })
+          .catch(error => {
+            console.log('parseArticle: ', error)
+          })
+        console.log('parseArticle', this.url);
+      },
       changeIndex: function(num) {
         var i = this.index + num;
         if (i < (this.article.length) && i >= 0) {
